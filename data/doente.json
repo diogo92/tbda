@@ -1,0 +1,109 @@
+[
+{
+	"codd": 100,
+	"nome": "Miguel Cunha",
+	"NIF": "316808089",
+	"morada": "Rua Souto, 311",
+	"cod_postal": "4000-003",
+	"telefone": "224163879",
+	"data_nasce": "1971-01-05",
+	"profissão": "Professor"
+
+}
+,
+{
+	"codd": 101,
+	"nome": "Sónia Silva",
+	"NIF": "221108082",
+	"morada": "Rua de Gaia, 111",
+	"cod_postal": "4400-001",
+	"telefone": "220551122",
+	"data_nasce": "1985-11-14",
+	"profissão": "Professor"
+
+}
+,
+{
+	"codd": 102,
+	"nome": "Nuno Trindade",
+	"NIF": "215108033",
+	"morada": "Rua da Gandra, 222",
+	"cod_postal": "4400-002",
+	"telefone": "226523422",
+	"data_nasce": "1968-12-17",
+	"profissão": "Engenheiro"
+
+}
+,
+{
+	"codd": 103,
+	"nome": "Manuel Pinheiro",
+	"NIF": "113121232",
+	"morada": "Rua de S. Mamede, 12",
+	"cod_postal": "4400-001",
+	"telefone": "223521212",
+	"data_nasce": "1965-10-05",
+	"profissão": "Motorista"
+
+}
+,
+{
+	"codd": 104,
+	"nome": "José Rocha",
+	"NIF": "111121982",
+	"morada": "Rua Sr. Matosinhos, 50",
+	"cod_postal": "4500-001",
+	"telefone": "225333120",
+	"data_nasce": "1967-08-06",
+	"profissão": "Cabeleireiro"
+
+}
+,
+{
+	"codd": 105,
+	"nome": "Maria Rocha",
+	"NIF": "756121982",
+	"morada": "Rua Sr. Matosinhos, 50",
+	"cod_postal": "4500-001",
+	"telefone": "225333120",
+	"data_nasce": "1968-08-06",
+	"profissão": "Secretária"
+
+}
+,
+{
+	"codd": 106,
+	"nome": "Rui Rocha",
+	"NIF": "116471982",
+	"morada": "Rua Sr. Matosinhos, 50",
+	"cod_postal": "4500-001",
+	"telefone": "225333120",
+	"data_nasce": "1997-02-24",
+	"profissão": "Estudante"
+
+}
+,
+{
+	"codd": 5,
+	"nome": "José Costa",
+	"NIF": "298487232",
+	"morada": "Rua da Angola, 23",
+	"cod_postal": "4445-557",
+	"telefone": "226133245",
+	"data_nasce": "1955-10-05",
+	"profissão": "Medicina interna"
+
+}
+,
+{
+	"codd": 6,
+	"nome": "Ricardo Almeida",
+	"NIF": "979822329",
+	"morada": "Rua de Cedofeita, 445",
+	"cod_postal": "4100-001",
+	"telefone": "226573245",
+	"data_nasce": "1955-10-15",
+	"profissão": "Cardiologia" 
+
+}
+]

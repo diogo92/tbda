@@ -1,0 +1,98 @@
+
+[
+{
+	"codm": 1,
+	"nome": "Fernado Rocha",
+	"NIF": "164325798",
+	"morada": "Rua Direita, 125",
+	"cod_postal": "4000-001",
+	"telefone": "224783456",
+	"data_nasce": "1965-11-11",
+	"especialidade": "Medicina interna"
+
+}
+,
+{
+	"codm": 2,
+	"nome": "Carla Antunes",
+	"NIF": "753422098",
+	"morada": "Rua do Ouro, 156",
+	"cod_postal": "4000-002",
+	"telefone": "226978645",
+	"data_nasce": "1968-10-05",
+	"especialidade": "Oftalmologia"
+
+}
+,
+{
+	"codm": 3,
+	"nome": "Luís Pereira",
+	"NIF": "797448393",
+	"morada": "Rua de Angola, 23",
+	"cod_postal": "4400-001",
+	"telefone": "226133245",
+	"data_nasce": "1955-10-05",
+	"especialidade": "Medicina interna"
+
+}
+,
+{
+	"codm": 4,
+	"nome": "Anísio Costa",
+	"NIF": "484764022",
+	"morada": "Rua de Angola, 23",
+	"cod_postal": "4400-001",
+	"telefone": "226133245",
+	"data_nasce": "1958-10-05",
+	"especialidade": "Cardiologia"
+
+}
+,
+{
+	"codm": 5,
+	"nome": "José Costa",
+	"NIF": "298487232",
+	"morada": "Rua da Angola, 23",
+	"cod_postal": "4400-001",
+	"telefone": "226133245",
+	"data_nasce": "1955-10-05",
+	"especialidade": "Medicina interna"
+
+}
+,
+{
+	"codm": 6,
+	"nome": "Ricardo Almeida",
+	"NIF": "979822329",
+	"morada": "Rua de Cedofeita, 445",
+	"cod_postal": "4100-001",
+	"telefone": "226573245",
+	"data_nasce": "1955-10-15",
+	"especialidade": "Cardiologia" 
+
+}
+,
+{
+	"codm": 7,
+	"nome": "José Martins",
+	"NIF": "513287234",
+	"morada": "Rua do Ouro, 156",
+	"cod_postal": "4000-002",
+	"telefone": "226978645",
+	"data_nasce": "1965-11-15",
+	"especialidade": "Cardiologia"
+
+}
+,
+{
+	"codm": 8,
+	"nome": "Rui Peres",
+	"NIF": "274632298",
+	"morada": "Avenida da República, 102",
+	"cod_postal": "4000-003",
+	"telefone": "224883545",
+	"data_nasce": "1968-10-15",
+	"especialidade": "Oftalmologia"
+
+}
+]
