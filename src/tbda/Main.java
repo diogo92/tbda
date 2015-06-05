@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.bson.Document;
 
+import tbda.model.Agenda;
 import tbda.model.Doente;
 import tbda.model.Medico;
 
@@ -49,6 +50,7 @@ public class Main {
 
 		MongoCollection<Document> medico = clinica.getCollection("medico");
 		MongoCollection<Document> doente = clinica.getCollection("doente");
+		MongoCollection<Document> agenda = clinica.getCollection("agenda");
 
 		Gson gson = new Gson();
 		try {
@@ -73,7 +75,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(
 					"data/doente.json"));
@@ -96,7 +98,27 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(
+					"data/agenda.json"));
+			Agenda[] agendaData = gson.fromJson(br, Agenda[].class);
+			for (Agenda agendaValue : agendaData) {
+				agenda.insertOne(new Document("nagenda", agendaValue
+						.getNagenda()).append("dia", agendaValue.getDia())
+						.append("codm", agendaValue.getCodm())
+						.append("hora_inicio", agendaValue.getHora_inicio())
+						.append("no_doentes", agendaValue.getNo_doentes()));
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		main.client.close();
 	}
 
