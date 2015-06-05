@@ -1,0 +1,208 @@
+[
+{
+	"nagenda" : 1,
+	"hora" : 10,
+	"preço" : 50,
+	"situação" : 2,
+	"relatório" : "Gripe",
+	"codd" : 100
+}
+,
+{
+	"nagenda" : 1,
+	"hora" : 11,
+	"preço" : 30,
+	"situação" : 5,
+	"relatório" : "Sarampo",
+	"codd" : 101
+}
+,
+{
+	"nagenda" : 2,
+	"hora" : 10,
+	"preço" : 50,
+	"situação" : 1,
+	"relatório" : "Miopia",
+	"codd" : 102
+}
+,
+{
+	"nagenda" : 2,
+	"hora" : 11,
+	"preço" : 50,
+	"situação" : 4,
+	"relatório" : "Glaucoma",
+	"codd" : 103
+}
+,
+{
+	"nagenda" : 3,
+	"hora" : 10,
+	"preço" : 30,
+	"situação" : 3,
+	"relatório" : "Gripe",
+	"codd" : 106
+}
+,
+{
+	"nagenda" : 3,
+	"hora" : 11,
+	"preço" : 50,
+	"situação" : 2,
+	"relatório" : "Gripe",
+	"codd" : 105
+}
+,
+{
+	"nagenda" : 4,
+	"hora" : 10,
+	"preço" : 0,
+	"situação" : 4,
+	"relatório" : "Enfarte",
+	"codd" : 5
+}
+,
+{
+	"nagenda" : 4,
+	"hora" : 11,
+	"preço" : 40,
+	"situação" : 1,
+	"relatório" : "Angina",
+	"codd" : 104
+}
+,
+{
+	"nagenda" : 9,
+	"hora" : 9,
+	"preço" : 40,
+	"situação" : 1,
+	"relatório" : "Gripe",
+	"codd" : 100
+}
+,
+{
+	"nagenda" : 9,
+	"hora" : 10,
+	"preço" : 0,
+	"situação" : 3,
+	"relatório" : "Úlcera",
+	"codd" : 6
+}
+,
+{
+	"nagenda" : 9,
+	"hora" : 11,
+	"preço" : 40,
+	"situação" : 5,
+	"relatório" : "Gripe",
+	"codd" : 104
+}
+,
+{
+	"nagenda" : 10,
+	"hora" : 10,
+	"preço" : 30,
+	"situação" : 3,
+	"relatório" : "Glaucoma",
+	"codd" : 103
+}
+,
+{
+	"nagenda" : 10,
+	"hora" : 11,
+	"preço" : 40,
+	"situação" : 1,
+	"relatório" : "Miopia",
+	"codd" : 105
+}
+,
+{
+	"nagenda" : 11,
+	"hora" : 10,
+	"preço" : 30,
+	"situação" : 1,
+	"relatório" : "Alergia",
+	"codd" : 105
+}
+,
+{
+	"nagenda" : 11,
+	"hora" : 11,
+	"preço" : 0,
+	"situação" : 5,
+	"relatório" : "Obesidade",
+	"codd" : 6
+}
+,
+{
+	"nagenda" : 12,
+	"hora" : 9,
+	"preço" : 0,
+	"situação" : 2,
+	"relatório" : "Enfarte",
+	"codd" : 5
+}
+,
+{
+	"nagenda" : 17,
+	"hora" : 15,
+	"preço" : 40,
+	"situação" : 3,
+	"relatório" : "Sarampo",
+	"codd" : 101
+}
+,
+{
+	"nagenda" : 18,
+	"hora" : 15,
+	"preço" : 0,
+	"situação" : 3,
+	"relatório" : "Cataratas",
+	"codd" : 6
+}
+,
+{
+	"nagenda" : 18,
+	"hora" : 16,
+	"preço" : 40,
+	"situação" : 1,
+	"relatório" : "Miopia",
+	"codd" : 104
+}
+,
+{
+	"nagenda" : 20,
+	"hora" : 10,
+	"preço" : 30,
+	"situação" : 2,
+	"relatório" : "Glaucoma",
+	"codd" : 103
+}
+,
+{
+	"nagenda" : 20,
+	"hora" : 11,
+	"preço" : 30,
+	"situação" : 1,
+	"relatório" : "Miopia",
+	"codd" : 102
+}
+,
+{
+	"nagenda" : 21,
+	"hora" : 10,
+	"preço" : 40,
+	"situação" : 1,
+	"relatório" : "Sarampo",
+	"codd" : 101
+}
+,
+{
+	"nagenda" : 22,
+	"hora" : 11,
+	"preço" : 0,
+	"situação" : 4,
+	"relatório" : "Angina",
+	"codd" : 5
+}
+]

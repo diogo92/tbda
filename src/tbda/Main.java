@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.bson.Document;
 
 import tbda.model.Agenda;
+import tbda.model.Consulta;
 import tbda.model.Doente;
 import tbda.model.Medico;
 
@@ -16,6 +17,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 
 public class Main {
 
@@ -51,6 +53,7 @@ public class Main {
 		MongoCollection<Document> medico = clinica.getCollection("medico");
 		MongoCollection<Document> doente = clinica.getCollection("doente");
 		MongoCollection<Document> agenda = clinica.getCollection("agenda");
+		MongoCollection<Document> consulta = clinica.getCollection("consulta");
 
 		Gson gson = new Gson();
 		try {
@@ -119,6 +122,31 @@ public class Main {
 			e.printStackTrace();
 		}
 
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(
+					"data/consulta.json"));
+			Consulta[] consultaData = gson.fromJson(br, Consulta[].class);
+			for (Consulta consultaValue : consultaData) {
+				consulta.insertOne(new Document("nagenda", consultaValue.getNagenda())
+						.append("hora", consultaValue.getHora())
+						.append("preço", consultaValue.getPreço())
+						.append("situação", consultaValue.getSituação())
+						.append("relatório", consultaValue.getRelatório())
+						.append("codd", consultaValue.getCodd()));
+				Document modifier = new Document("no_doentes",1);
+				Document increment = new Document("$inc",modifier);
+				Document search = new Document("nagenda",consultaValue.getNagenda());
+				UpdateResult update = agenda.updateOne(search,increment);
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		main.client.close();
 	}
 
