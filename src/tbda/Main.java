@@ -13,8 +13,11 @@ import tbda.model.Doente;
 import tbda.model.Medico;
 
 import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
@@ -146,6 +149,18 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		BasicDBObject query = new BasicDBObject("especialidade", "Oftalmologia");
+		FindIterable<Document> iterable = clinica.getCollection("medico").find(query);
+		
+		iterable.forEach(new Block<Document>() {
+		    @Override
+		    public void apply(final Document document) {
+		        System.out.print(document.get("nome"));
+		        System.out.print(" ");
+		        System.out.println(document.get("data_nasce"));
+		    }
+		});
 		
 		main.client.close();
 	}
