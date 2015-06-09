@@ -93,7 +93,7 @@ public class Main {
 					"data/doente.json"));
 			Doente[] doenteData = gson.fromJson(br, Doente[].class);
 			for (Doente doenteValue : doenteData) {
-				doente.insertOne(new Document("codm", doenteValue.getCodd())
+				doente.insertOne(new Document("codd", doenteValue.getCodd())
 						.append("nome", doenteValue.getNome())
 						.append("NIF", doenteValue.getNIF())
 						.append("morada", doenteValue.getMorada())
@@ -187,18 +187,38 @@ public class Main {
 			
 			BasicDBObject queryCodm = new BasicDBObject("codm", i);
 			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryCodm);
+			final MongoDatabase clinicaCopy = clinica;
+			
 			iterableMedico2.forEach(new Block<Document>() {
 			    @Override
 			    public void apply(Document document) {
 			    	System.out.print(document.get("codm"));
 			        System.out.print(" ");
 			        System.out.println(document.get("nome"));
+			        
 			        if(agendaMedico.get((Integer) document.get("codm")) == (null))
 			        	System.out.println("O medico nao tem consultas agendadas!");
 			        else {
 			        	for (int i = 0; i < agendaMedico.get(document.get("codm")).size(); i++){
-			        		System.out.print(agendaMedico.get(document.get("codm")).get(i).get("dia"));
-			        		System.out.print(" ");
+			        		System.out.println(agendaMedico.get(document.get("codm")).get(i).get("dia"));
+			        		BasicDBObject queryNagenda = new BasicDBObject("nagenda", agendaMedico.get(document.get("codm")).get(i).get("nagenda"));
+			    			FindIterable<Document> iterableConsulta = clinicaCopy.getCollection("consulta").find(queryNagenda);
+			    			iterableConsulta.forEach(new Block<Document>() {
+			    			    @Override
+			    			    public void apply(Document document) {
+			    			    	System.out.print(document.get("hora") + " ");
+			    			    	BasicDBObject queryCodd = new BasicDBObject("codd", document.get("codd"));
+			    			    	FindIterable<Document> iterableDoente = clinicaCopy.getCollection("doente").find(queryCodd);
+			    			    	iterableDoente.forEach(new Block<Document>() {
+			    			    		@Override
+			    			    		public void apply(Document document){
+			    			    			System.out.print(document.get("nome") + " ");
+			    			    		}
+			    			    	});
+			    			    	System.out.println(document.get("relatório"));
+			    			    	
+			    			    }
+			    			});
 			        	}
 			        }
 			    }
