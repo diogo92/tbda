@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bson.Document;
 
@@ -29,8 +32,11 @@ public class Main {
 	private String database;
 	private String password;
 	private MongoClientURI uri;
+	static MyMap agendaMedico;
 
 	public Main() {
+
+		agendaMedico = new MyMap();
 
 		user = "tbdE";
 		database = "dbE";
@@ -150,10 +156,12 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		BasicDBObject query = new BasicDBObject("especialidade", "Oftalmologia");
-		FindIterable<Document> iterable = clinica.getCollection("medico").find(query);
+		//Mostrar o nome e data de nascimento dos oftalmologistas
+		BasicDBObject queryOftalmologia = new BasicDBObject("especialidade", "Oftalmologia");
+		FindIterable<Document> iterableMedico = clinica.getCollection("medico").find(queryOftalmologia);
 		
-		iterable.forEach(new Block<Document>() {
+		System.out.println("OFTALMOLOGISTAS:");
+		iterableMedico.forEach(new Block<Document>() {
 		    @Override
 		    public void apply(final Document document) {
 		        System.out.print(document.get("nome"));
@@ -162,7 +170,42 @@ public class Main {
 		    }
 		});
 		
+		//Relatório da atividade clínica
+		FindIterable<Document> iterableAgenda = clinica.getCollection("agenda").find();
+		System.out.println("RELATORIO DE ATIVIDADE MEDICA:");
+		
+		iterableAgenda.forEach(new Block<Document>() {
+			ArrayList<Document> agendas = new ArrayList<Document>();
+		    @Override
+		    public void apply(Document document) {
+		    	agendas.add(document);
+		    	agendaMedico.put((int) document.get("codm"), document);
+		    }
+		});
+		
+		for(int i = 1; i <= clinica.getCollection("medico").count(); i++){
+			
+			BasicDBObject queryCodm = new BasicDBObject("codm", i);
+			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryCodm);
+			iterableMedico2.forEach(new Block<Document>() {
+			    @Override
+			    public void apply(Document document) {
+			    	System.out.print(document.get("codm"));
+			        System.out.print(" ");
+			        System.out.println(document.get("nome"));
+			        if(agendaMedico.get((Integer) document.get("codm")) == (null))
+			        	System.out.println("O medico nao tem consultas agendadas!");
+			        else {
+			        	for (int i = 0; i < agendaMedico.get(document.get("codm")).size(); i++){
+			        		System.out.print(agendaMedico.get(document.get("codm")).get(i).get("dia"));
+			        		System.out.print(" ");
+			        	}
+			        }
+			    }
+			});
+			
+		}
+		
 		main.client.close();
 	}
-
 }
