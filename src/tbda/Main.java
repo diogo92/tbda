@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bson.Document;
 
@@ -33,10 +31,12 @@ public class Main {
 	private String password;
 	private MongoClientURI uri;
 	static MyMap agendaMedico;
+	static boolean[] reportAnginaEnfarte;
 
 	public Main() {
 
 		agendaMedico = new MyMap();
+		reportAnginaEnfarte = new boolean[10];
 
 		user = "tbdE";
 		database = "dbE";
@@ -202,6 +202,7 @@ public class Main {
 			        	for (int i = 0; i < agendaMedico.get(document.get("codm")).size(); i++){
 			        		System.out.println(agendaMedico.get(document.get("codm")).get(i).get("dia"));
 			        		BasicDBObject queryNagenda = new BasicDBObject("nagenda", agendaMedico.get(document.get("codm")).get(i).get("nagenda"));
+			        		final int codm = (int) document.get("codm");
 			    			FindIterable<Document> iterableConsulta = clinicaCopy.getCollection("consulta").find(queryNagenda);
 			    			iterableConsulta.forEach(new Block<Document>() {
 			    			    @Override
@@ -217,13 +218,32 @@ public class Main {
 			    			    	});
 			    			    	System.out.println(document.get("relatório"));
 			    			    	
+			    			    	//Ver quais os médicos que têm enfarte e angina para a terceira pergunta
+			    			    	if(document.get("relatório").equals("Enfarte") || document.get("relatório").equals("Angina"))
+			    			    		reportAnginaEnfarte[codm] = true;
 			    			    }
 			    			});
 			        	}
 			        }
 			    }
 			});
-			
+		}
+		
+		//Médicos que tenham relatório como Enfarte ou Angina
+		System.out.println("MÉDICOS COM PELO MENOS UM RELATÓRIO DE ANGINA OU ENFARTE");
+		for(int i = 0; i < reportAnginaEnfarte.length; i++){
+			if(!reportAnginaEnfarte[i])
+				continue;
+			BasicDBObject queryFinal = new BasicDBObject("codm", i);
+			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryFinal);
+			iterableMedico2.forEach(new Block<Document>() {
+			    @Override
+			    public void apply(final Document document) {
+			        System.out.print(document.get("nome"));
+			        System.out.print(" ");
+			        System.out.println(document.get("especialidade"));
+			    }
+			});
 		}
 		
 		main.client.close();
