@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -32,8 +33,13 @@ public class Main {
 	private String database;
 	private String password;
 	private MongoClientURI uri;
+	static MyMap agendaMedico;
+	static boolean[] reportAnginaEnfarte;
 
 	public Main() {
+
+		agendaMedico = new MyMap();
+		reportAnginaEnfarte = new boolean[10];
 
 		user = "tbdE";
 		database = "dbE";
@@ -186,10 +192,12 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		BasicDBObject query = new BasicDBObject("especialidade", "Oftalmologia");
-		FindIterable<Document> iterable = clinica.getCollection("medico").find(query);
+		//Mostrar o nome e data de nascimento dos oftalmologistas
+		BasicDBObject queryOftalmologia = new BasicDBObject("especialidade", "Oftalmologia");
+		FindIterable<Document> iterableMedico = clinica.getCollection("medico").find(queryOftalmologia);
 		
-		iterable.forEach(new Block<Document>() {
+		System.out.println("OFTALMOLOGISTAS:");
+		iterableMedico.forEach(new Block<Document>() {
 		    @Override
 		    public void apply(final Document document) {
 		        System.out.print(document.get("nome"));
@@ -198,7 +206,82 @@ public class Main {
 		    }
 		});
 		
+		//Relatório da atividade clínica
+		FindIterable<Document> iterableAgenda = clinica.getCollection("agenda").find();
+		System.out.println("RELATORIO DE ATIVIDADE MEDICA:");
+		
+		iterableAgenda.forEach(new Block<Document>() {
+			ArrayList<Document> agendas = new ArrayList<Document>();
+		    @Override
+		    public void apply(Document document) {
+		    	agendas.add(document);
+		    	agendaMedico.put((int) document.get("codm"), document);
+		    }
+		});
+		
+		for(int i = 1; i <= clinica.getCollection("medico").count(); i++){
+			
+			BasicDBObject queryCodm = new BasicDBObject("codm", i);
+			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryCodm);
+			final MongoDatabase clinicaCopy = clinica;
+			
+			iterableMedico2.forEach(new Block<Document>() {
+			    @Override
+			    public void apply(Document document) {
+			    	System.out.print(document.get("codm"));
+			        System.out.print(" ");
+			        System.out.println(document.get("nome"));
+			        
+			        if(agendaMedico.get((Integer) document.get("codm")) == (null))
+			        	System.out.println("O medico nao tem consultas agendadas!");
+			        else {
+			        	for (int i = 0; i < agendaMedico.get(document.get("codm")).size(); i++){
+			        		System.out.println(agendaMedico.get(document.get("codm")).get(i).get("dia"));
+			        		BasicDBObject queryNagenda = new BasicDBObject("nagenda", agendaMedico.get(document.get("codm")).get(i).get("nagenda"));
+			        		final int codm = (int) document.get("codm");
+			    			FindIterable<Document> iterableConsulta = clinicaCopy.getCollection("consulta").find(queryNagenda);
+			    			iterableConsulta.forEach(new Block<Document>() {
+			    			    @Override
+			    			    public void apply(Document document) {
+			    			    	System.out.print(document.get("hora") + " ");
+			    			    	BasicDBObject queryCodd = new BasicDBObject("codd", document.get("codd"));
+			    			    	FindIterable<Document> iterableDoente = clinicaCopy.getCollection("doente").find(queryCodd);
+			    			    	iterableDoente.forEach(new Block<Document>() {
+			    			    		@Override
+			    			    		public void apply(Document document){
+			    			    			System.out.print(document.get("nome") + " ");
+			    			    		}
+			    			    	});
+			    			    	System.out.println(document.get("relatório"));
+			    			    	
+			    			    	//Ver quais os médicos que têm enfarte e angina para a terceira pergunta
+			    			    	if(document.get("relatório").equals("Enfarte") || document.get("relatório").equals("Angina"))
+			    			    		reportAnginaEnfarte[codm] = true;
+			    			    }
+			    			});
+			        	}
+			        }
+			    }
+			});
+		}
+		
+		//Médicos que tenham relatório como Enfarte ou Angina
+		System.out.println("MÉDICOS COM PELO MENOS UM RELATÓRIO DE ANGINA OU ENFARTE");
+		for(int i = 0; i < reportAnginaEnfarte.length; i++){
+			if(!reportAnginaEnfarte[i])
+				continue;
+			BasicDBObject queryFinal = new BasicDBObject("codm", i);
+			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryFinal);
+			iterableMedico2.forEach(new Block<Document>() {
+			    @Override
+			    public void apply(final Document document) {
+			        System.out.print(document.get("nome"));
+			        System.out.print(" ");
+			        System.out.println(document.get("especialidade"));
+			    }
+			});
+		}
+		
 		main.client.close();
 	}
-
 }
