@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.bson.Document;
+
 import tbda.model.Agenda;
 import tbda.model.Consulta;
 import tbda.model.Doente;
@@ -15,6 +16,7 @@ import tbda.model.Medico;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
+import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
@@ -149,7 +151,9 @@ public class Main {
 			for (Consulta consultaValue : consultaData) {
 				Boolean found = false;
 				BasicDBObject query = new BasicDBObject("codm", consultaValue.getCodd());
+				BasicDBObject query2 = new BasicDBObject("nagenda",consultaValue.getNagenda());
 				BasicDBObject codd = null;
+				BasicDBObject nagenda = null;
 				
 				for (Document doc : medico.find(query)) {
 					if((int)doc.get("codm") == consultaValue.getCodd()){
@@ -170,9 +174,14 @@ public class Main {
 					}
 				}
 				
+				for (Document doc : agenda.find(query2)) {
+					if((int)doc.get("nagenda") == consultaValue.getNagenda()){
+						nagenda = new BasicDBObject("$ref","agenda").append("$id", doc.get("_id")).append("$db", "clinica");
+						break;
+					}
+				}
 				
-				
-				consulta.insertOne(new Document("nagenda", consultaValue.getNagenda())
+				consulta.insertOne(new Document("nagenda", nagenda)
 						.append("hora", consultaValue.getHora())
 						.append("preço", consultaValue.getPreço())
 						.append("situação", consultaValue.getSituação())
@@ -197,72 +206,33 @@ public class Main {
 		FindIterable<Document> iterableMedico = clinica.getCollection("medico").find(queryOftalmologia);
 		
 		System.out.println("OFTALMOLOGISTAS:");
-		iterableMedico.forEach(new Block<Document>() {
-		    @Override
-		    public void apply(final Document document) {
-		        System.out.print(document.get("nome"));
-		        System.out.print(" ");
-		        System.out.println(document.get("data_nasce"));
-		    }
-		});
+		for (Document document : iterableMedico) {
+			System.out.print(document.get("nome"));
+	        System.out.print(" ");
+	        System.out.println(document.get("data_nasce"));
+		}
 		
+		System.out.println();
+
 		//Relatório da atividade clínica
 		FindIterable<Document> iterableAgenda = clinica.getCollection("agenda").find();
 		System.out.println("RELATORIO DE ATIVIDADE MEDICA:");
-		
-		iterableAgenda.forEach(new Block<Document>() {
-			ArrayList<Document> agendas = new ArrayList<Document>();
-		    @Override
-		    public void apply(Document document) {
-		    	agendas.add(document);
-		    	agendaMedico.put((int) document.get("codm"), document);
-		    }
-		});
-		
-		for(int i = 1; i <= clinica.getCollection("medico").count(); i++){
-			
-			BasicDBObject queryCodm = new BasicDBObject("codm", i);
-			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryCodm);
-			final MongoDatabase clinicaCopy = clinica;
-			
-			iterableMedico2.forEach(new Block<Document>() {
-			    @Override
-			    public void apply(Document document) {
-			    	System.out.print(document.get("codm"));
-			        System.out.print(" ");
-			        System.out.println(document.get("nome"));
-			        
-			        if(agendaMedico.get((Integer) document.get("codm")) == (null))
-			        	System.out.println("O medico nao tem consultas agendadas!");
-			        else {
-			        	for (int i = 0; i < agendaMedico.get(document.get("codm")).size(); i++){
-			        		System.out.println(agendaMedico.get(document.get("codm")).get(i).get("dia"));
-			        		BasicDBObject queryNagenda = new BasicDBObject("nagenda", agendaMedico.get(document.get("codm")).get(i).get("nagenda"));
-			        		final int codm = (int) document.get("codm");
-			    			FindIterable<Document> iterableConsulta = clinicaCopy.getCollection("consulta").find(queryNagenda);
-			    			iterableConsulta.forEach(new Block<Document>() {
-			    			    @Override
-			    			    public void apply(Document document) {
-			    			    	System.out.print(document.get("hora") + " ");
-			    			    	BasicDBObject queryCodd = new BasicDBObject("codd", document.get("codd"));
-			    			    	FindIterable<Document> iterableDoente = clinicaCopy.getCollection("doente").find(queryCodd);
-			    			    	iterableDoente.forEach(new Block<Document>() {
-			    			    		@Override
-			    			    		public void apply(Document document){
-			    			    			System.out.print(document.get("nome") + " ");
-			    			    		}
-			    			    	});
-			    			    	System.out.println(document.get("relatório"));
-			    			    	
-			    			    	//Ver quais os médicos que têm enfarte e angina para a terceira pergunta
-			    			    	if(document.get("relatório").equals("Enfarte") || document.get("relatório").equals("Angina"))
-			    			    		reportAnginaEnfarte[codm] = true;
-			    			    }
-			    			});
-			        	}
-			        }
-			    }
-			});
+		for (Document document : clinica.getCollection("medico").find()) {
+			System.out.println(document.get("codm") + " " + document.get("nome"));
+			BasicDBObject ref = new BasicDBObject("$ref","medico").append("$id", document.get("_id")).append("$db", "clinica");
+			BasicDBObject query = new BasicDBObject("codm",ref);
+			for (Document agendaEntry : clinica.getCollection("agenda").find(query)) {
+				System.out.println("\t"+ "Dia: " + agendaEntry.get("dia"));
+				BasicDBObject ref2 =  new BasicDBObject("$ref","agenda").append("$id", agendaEntry.get("_id")).append("$db", "clinica");
+				BasicDBObject query2 = new BasicDBObject("nagenda",ref2);
+				for(Document consultaEntry : clinica.getCollection("consulta").find(query2)){
+					DBRef ref3 = (DBRef) consultaEntry.get("codd");
+					BasicDBObject ref4 = new BasicDBObject("_id", ref3.getId());
+					for (Document doenteEntry : clinica.getCollection(ref3.getCollectionName()).find(ref4)) {
+						System.out.println("\t\t" + "Horas: " + consultaEntry.get("hora") + " ; Doente: " + doenteEntry.get("nome") + " ; Relatório: " + consultaEntry.get("relatório"));
+					}
+				}
+			}
 		}
 		
 		//Médicos que tenham relatório como Enfarte ou Angina
