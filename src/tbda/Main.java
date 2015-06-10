@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bson.Document;
 
@@ -16,7 +17,6 @@ import tbda.model.Medico;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.Block;
 import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -32,12 +32,10 @@ public class Main {
 	private String database;
 	private String password;
 	private MongoClientURI uri;
-	static MyMap agendaMedico;
 	static boolean[] reportAnginaEnfarte;
 
 	public Main() {
 
-		agendaMedico = new MyMap();
 		reportAnginaEnfarte = new boolean[10];
 
 		user = "tbdE";
@@ -134,7 +132,7 @@ public class Main {
 						.getNagenda()).append("dia", agendaValue.getDia())
 						.append("codm",codm)
 						.append("hora_inicio", agendaValue.getHora_inicio())
-						.append("no_doentes", agendaValue.getNo_doentes()));
+						.append("no_doentes", 0));
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
@@ -247,14 +245,19 @@ public class Main {
 		BasicDBObject query = new BasicDBObject("$or",or);
 		
 		FindIterable<Document> iterableConsulta = clinica.getCollection("consulta").find(query);
+		Map<Object, Object> medicos = new HashMap<Object,Object>();
 		for (Document document : iterableConsulta) {
 			DBRef ref =  (DBRef) document.get("nagenda");
 			for(Document agendaEntry : clinica.getCollection("agenda").find(new BasicDBObject("_id",ref.getId()))){
 				DBRef ref2 = (DBRef) agendaEntry.get("codm");
 				for(Document medicoEntry : clinica.getCollection("medico").find(new BasicDBObject("_id",ref2.getId()))){
-					System.out.println("Nome: " + medicoEntry.get("nome") + " ; Especialidade: " + medicoEntry.get("especialidade") + " ; Dia: " + agendaEntry.get("dia"));
-				}
+					medicos.put(medicoEntry.get("nome"), medicoEntry.get("especialidade"));
+				}				
 			}
+		}
+		
+		for (Object key : medicos.keySet()) {
+			System.out.println("Nome: " + key + " ; Especialidade: " + medicos.get(key));
 		}
 		
 		System.out.println();

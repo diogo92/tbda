@@ -5,7 +5,7 @@ public class Agenda {
 	String dia;
 	int codm;
 	int hora_inicio;
-	int no_doentes;
+	
 	public int getNagenda() {
 		return nagenda;
 	}
@@ -29,11 +29,5 @@ public class Agenda {
 	}
 	public void setHora_inicio(int hora_inicio) {
 		this.hora_inicio = hora_inicio;
-	}
-	public int getNo_doentes() {
-		return no_doentes;
-	}
-	public void setNo_doentes(int no_doentes) {
-		this.no_doentes = no_doentes;
 	}
 }
