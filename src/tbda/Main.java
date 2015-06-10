@@ -14,6 +14,7 @@ import tbda.model.Doente;
 import tbda.model.Medico;
 
 import com.google.gson.Gson;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
 import com.mongodb.DBRef;
@@ -214,8 +215,6 @@ public class Main {
 		
 		System.out.println();
 
-		//Relatório da atividade clínica
-		FindIterable<Document> iterableAgenda = clinica.getCollection("agenda").find();
 		System.out.println("RELATORIO DE ATIVIDADE MEDICA:");
 		for (Document document : clinica.getCollection("medico").find()) {
 			System.out.println(document.get("codm") + " " + document.get("nome"));
@@ -235,22 +234,30 @@ public class Main {
 			}
 		}
 		
+		System.out.println();
+		
 		//Médicos que tenham relatório como Enfarte ou Angina
 		System.out.println("MÉDICOS COM PELO MENOS UM RELATÓRIO DE ANGINA OU ENFARTE");
-		for(int i = 0; i < reportAnginaEnfarte.length; i++){
-			if(!reportAnginaEnfarte[i])
-				continue;
-			BasicDBObject queryFinal = new BasicDBObject("codm", i);
-			FindIterable<Document> iterableMedico2 = clinica.getCollection("medico").find(queryFinal);
-			iterableMedico2.forEach(new Block<Document>() {
-			    @Override
-			    public void apply(final Document document) {
-			        System.out.print(document.get("nome"));
-			        System.out.print(" ");
-			        System.out.println(document.get("especialidade"));
-			    }
-			});
+
+		BasicDBObject relatorio1 = new BasicDBObject("relatório","Angina");
+		BasicDBObject relatorio2 = new BasicDBObject("relatório","Enfarte");
+		BasicDBList or = new BasicDBList();
+		or.add(relatorio1);
+		or.add(relatorio2);
+		BasicDBObject query = new BasicDBObject("$or",or);
+		
+		FindIterable<Document> iterableConsulta = clinica.getCollection("consulta").find(query);
+		for (Document document : iterableConsulta) {
+			DBRef ref =  (DBRef) document.get("nagenda");
+			for(Document agendaEntry : clinica.getCollection("agenda").find(new BasicDBObject("_id",ref.getId()))){
+				DBRef ref2 = (DBRef) agendaEntry.get("codm");
+				for(Document medicoEntry : clinica.getCollection("medico").find(new BasicDBObject("_id",ref2.getId()))){
+					System.out.println("Nome: " + medicoEntry.get("nome") + " ; Especialidade: " + medicoEntry.get("especialidade") + " ; Dia: " + agendaEntry.get("dia"));
+				}
+			}
 		}
+		
+		System.out.println();
 		
 		main.client.close();
 	}
