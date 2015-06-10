@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
-
 import tbda.model.Agenda;
 import tbda.model.Consulta;
 import tbda.model.Doente;
@@ -17,8 +15,6 @@ import tbda.model.Medico;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
-import com.mongodb.DBCursor;
-import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
@@ -121,17 +117,19 @@ public class Main {
 			for (Agenda agendaValue : agendaData) {
 				
 				BasicDBObject query = new BasicDBObject("codm", agendaValue.getCodm());
-				Object id = null;
+				
+				BasicDBObject codm = null;
 				
 				for (Document doc : medico.find(query)) {
 					if((int)doc.get("codm") == agendaValue.getCodm()){
-						id = doc.get("_id");
+						codm = new BasicDBObject("$ref","medico").append("$id", doc.get("_id")).append("$db", "clinica");
 						break;
 					}
 				}
+				
 				agenda.insertOne(new Document("nagenda", agendaValue
 						.getNagenda()).append("dia", agendaValue.getDia())
-						.append("codm", id)
+						.append("codm",codm)
 						.append("hora_inicio", agendaValue.getHora_inicio())
 						.append("no_doentes", agendaValue.getNo_doentes()));
 			}
@@ -150,13 +148,13 @@ public class Main {
 			Consulta[] consultaData = gson.fromJson(br, Consulta[].class);
 			for (Consulta consultaValue : consultaData) {
 				Boolean found = false;
-				Object id = null ;
 				BasicDBObject query = new BasicDBObject("codm", consultaValue.getCodd());
+				BasicDBObject codd = null;
 				
 				for (Document doc : medico.find(query)) {
 					if((int)doc.get("codm") == consultaValue.getCodd()){
 						found = true;
-						id = doc.get("_id");
+						codd = new BasicDBObject("$ref","medico").append("$id", doc.get("_id")).append("$db", "clinica");
 						break;
 					}
 				}
@@ -166,18 +164,20 @@ public class Main {
 					for (Document doc: doente.find(query)){
 						if((int)doc.get("codd") == consultaValue.getCodd()){
 							found = true;
-							id = doc.get("_id");
+							codd = new BasicDBObject("$ref","doente").append("$id", doc.get("_id")).append("$db", "clinica");
 							break;
 						}
 					}
 				}
+				
+				
 				
 				consulta.insertOne(new Document("nagenda", consultaValue.getNagenda())
 						.append("hora", consultaValue.getHora())
 						.append("preço", consultaValue.getPreço())
 						.append("situação", consultaValue.getSituação())
 						.append("relatório", consultaValue.getRelatório())
-						.append("codd", id));
+						.append("codd", codd));
 				Document modifier = new Document("no_doentes",1);
 				Document increment = new Document("$inc",modifier);
 				Document search = new Document("nagenda",consultaValue.getNagenda());
