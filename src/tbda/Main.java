@@ -149,21 +149,12 @@ public class Main {
 			Consulta[] consultaData = gson.fromJson(br, Consulta[].class);
 			for (Consulta consultaValue : consultaData) {
 				Boolean found = false;
-				BasicDBObject query = new BasicDBObject("codm", consultaValue.getCodd());
 				BasicDBObject query2 = new BasicDBObject("nagenda",consultaValue.getNagenda());
 				BasicDBObject codd = null;
 				BasicDBObject nagenda = null;
 				
-				for (Document doc : medico.find(query)) {
-					if((int)doc.get("codm") == consultaValue.getCodd()){
-						found = true;
-						codd = new BasicDBObject("$ref","medico").append("$id", doc.get("_id")).append("$db", "clinica");
-						break;
-					}
-				}
-				
 				if(!found){
-					query = new BasicDBObject("codd",consultaValue.getCodd());
+					BasicDBObject query = new BasicDBObject("codd",consultaValue.getCodd());
 					for (Document doc: doente.find(query)){
 						if((int)doc.get("codd") == consultaValue.getCodd()){
 							found = true;
